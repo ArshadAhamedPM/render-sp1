@@ -3,27 +3,34 @@ package com.quran.api.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.quran.api.model.Quran;
 import com.quran.api.model.Sura;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class Services {
+	
+	@Autowired
+	private HttpServletRequest request;
 
 	public Quran getSuraDetails() throws JAXBException, IOException {
+		getClientIp();
 		InputStream xmlFile = new ClassPathResource("quran-uthmani.xml").getInputStream();
 		JAXBContext jaxbContext = JAXBContext.newInstance(Quran.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -64,5 +71,27 @@ public class Services {
 		}
 		return aya;
 	}
+	
+	public void getClientIp() {
+        String ipAddress = request.getHeader("X-Forwarded-For");
+
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+        }
+        System.out.println("getSuraDetails : "+ipAddress);
+
+    }
 
 }
