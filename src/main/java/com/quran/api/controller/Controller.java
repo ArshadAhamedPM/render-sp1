@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.quran.api.model.VerbInfo;
+
 import jakarta.xml.bind.JAXBException;
 
 @RestController
@@ -16,6 +18,9 @@ public class Controller {
 	
 	@Autowired
 	Services services;
+	
+	@Autowired
+    private VerbJsonReaderService jsonReaderService;
 
 	@GetMapping("/suras")
 	public List<Map<String, Object>> getSuras() throws JAXBException, IOException{
@@ -32,4 +37,11 @@ public class Controller {
 	public String getAyah(@PathVariable("id") int id,@PathVariable("ayaId") int ayaId) throws JAXBException, IOException {
 		return services.getAyah(id,ayaId);
 	}
+	
+	
+
+    @GetMapping("/verbs")
+    public List<VerbInfo> getVerbs() {
+        return jsonReaderService.getAllVerbs();
+    }
 }
