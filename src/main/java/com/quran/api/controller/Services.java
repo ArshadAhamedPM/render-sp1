@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -28,9 +29,13 @@ public class Services {
 	
 	@Autowired
 	private HttpServletRequest request;
+	
+	final static Logger logger = LoggerFactory.getLogger(Services.class);
+	   
 
 	public Quran getSuraDetails() throws JAXBException, IOException {
 		getClientIp();
+		
 		InputStream xmlFile = new ClassPathResource("quran-uthmani.xml").getInputStream();
 		JAXBContext jaxbContext = JAXBContext.newInstance(Quran.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -90,7 +95,7 @@ public class Services {
         if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
         }
-        System.out.println("getSuraDetails : "+ipAddress);
+        logger.info("getSuraDetails : "+ipAddress);
 
     }
 
