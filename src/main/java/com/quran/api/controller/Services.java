@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.quran.api.model.Quran;
 import com.quran.api.model.Sura;
+import com.quran.api.repo.RequestDetailsRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.xml.bind.JAXBContext;
@@ -27,36 +28,40 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Services {
 	
-	@Autowired
-	private HttpServletRequest request;
+	
+	
+	private Quran quran;
 	
 	final static Logger logger = LoggerFactory.getLogger(Services.class);
 	   
-
-	public Quran getSuraDetails() throws JAXBException, IOException {
-		getClientIp();
+	@jakarta.annotation.PostConstruct
+	public void getSuraDetails() throws JAXBException, IOException {
 		
 		InputStream xmlFile = new ClassPathResource("quran-uthmani.xml").getInputStream();
 		JAXBContext jaxbContext = JAXBContext.newInstance(Quran.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		Quran quran = (Quran) unmarshaller.unmarshal(xmlFile);
-		return quran;
+		quran = (Quran) unmarshaller.unmarshal(xmlFile);
 	}
 
 	public List<Map<String, Object>> getSuras() throws JAXBException, IOException {
+		long s = System.currentTimeMillis();
+		logger.info("Get sura names starts ");
 		List<Map<String, Object>> list = new ArrayList<>();
-		getSuraDetails().getSuras().stream().forEach(x -> {
+		quran.getSuras().stream().forEach(x -> {
 			Map<String, Object> map = new HashMap<>();
 			map.put("index", x.getIndex());
 			map.put("name", x.getName());
 			list.add(map);
 		});
+		logger.info("Get sura names ends "+ (System.currentTimeMillis()-s));
 		return list;
 	}
 
 	public List<Map<String, Object>> getSura(int id) throws JAXBException, IOException {
+		long s = System.currentTimeMillis();
+		logger.info("Get sura starts ");
 		List<Map<String, Object>> list = new ArrayList<>();
-		getSuraDetails().getSuras().stream().filter(x -> x.getIndex() == id).findFirst().ifPresent(sura -> {
+		quran.getSuras().stream().filter(x -> x.getIndex() == id).findFirst().ifPresent(sura -> {
 			sura.getAyas().stream().forEach(x -> {
 				Map<String, Object> map = new HashMap<>();
 				map.put("index", x.getIndex());
@@ -65,38 +70,23 @@ public class Services {
 
 			});
 		});
+		logger.info("Get sura ends "+ (System.currentTimeMillis()-s));
 		return list;
 	}
 
 	public String getAyah(int id, int ayaId) throws JAXBException, IOException {
 		String aya = "";
-		Optional<Sura> sura = getSuraDetails().getSuras().stream().filter(x -> x.getIndex() == id).findFirst();
+		long s = System.currentTimeMillis();
+		logger.info("Get ayat starts ");
+		Optional<Sura> sura = quran.getSuras().stream().filter(x -> x.getIndex() == id).findFirst();
 		if (sura.isPresent()) {
 			aya = sura.get().getAyas().stream().filter(x -> x.getIndex() == ayaId).findFirst().get().getText();
 		}
+		logger.info("Get ayat ends "+ (System.currentTimeMillis()-s));
 		return aya;
 	}
 	
-	public void getClientIp() {
-        String ipAddress = request.getHeader("X-Forwarded-For");
-
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("Proxy-Client-IP");
-        }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getRemoteAddr();
-        }
-        logger.info("getSuraDetails : "+ipAddress);
-
-    }
+	
+	
 
 }

@@ -1,10 +1,15 @@
+C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\aop\RequestLoggingAspect.java
 C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\ApiApplication.java
 C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\config\WebConfig.java
 C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\controller\Controller.java
+C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\controller\RepoService.java
 C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\controller\Services.java
 C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\controller\VerbExcelReaderService.java
 C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\controller\VerbJsonReaderService.java
+C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\entity\RequestDetails.java
 C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\model\Aya.java
 C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\model\Quran.java
 C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\model\Sura.java
+C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\model\TopicScraper.java
 C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\model\VerbInfo.java
+C:\Arshad\Tutorials\Spring boot\api\api\src\main\java\com\quran\api\repo\RequestDetailsRepository.java

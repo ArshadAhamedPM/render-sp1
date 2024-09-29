@@ -37,8 +37,6 @@ public class Controller {
 	public String getAyah(@PathVariable("id") int id,@PathVariable("ayaId") int ayaId) throws JAXBException, IOException {
 		return services.getAyah(id,ayaId);
 	}
-	
-	
 
     @GetMapping("/verbs")
     public List<VerbInfo> getVerbs() {
