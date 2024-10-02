@@ -61,11 +61,14 @@ public class Services {
 		long s = System.currentTimeMillis();
 		logger.info("Get sura starts ");
 		List<Map<String, Object>> list = new ArrayList<>();
-		quran.getSuras().stream().filter(x -> x.getIndex() == id).findFirst().ifPresent(sura -> {
+		quran.getSuras().stream().filter(x-> x.getIndex() == id).findFirst().ifPresent(sura -> {
 			sura.getAyas().stream().forEach(x -> {
 				Map<String, Object> map = new HashMap<>();
 				map.put("index", x.getIndex());
 				map.put("name", x.getText());
+				map.put("suraName", sura.getName());
+				
+				
 				list.add(map);
 
 			});
@@ -87,6 +90,26 @@ public class Services {
 	}
 	
 	
-	
+//	<ion-header>
+//	  <ion-toolbar color="secondary">
+//	    <ion-title>Favorite Verbs</ion-title>
+//	  </ion-toolbar>
+//	</ion-header>
+//
+//	<ion-content class="ion-padding">
+//	  <ion-card *ngFor="let verb of favoriteVerbs; let i = index" color="secondary">
+//	    <ion-card-header>
+//	      <ion-card-title class="rtl-text">{{ verb.verb }}</ion-card-title>
+//	    </ion-card-header>
+//	    <ion-card-content>
+//	      <p><strong>Root:</strong> {{ verb.root }}</p>
+//	      <p><strong>Translation:</strong> {{ verb.translation }}</p>
+//
+//	      <!-- Dustbin icon positioned in the bottom right corner -->
+//	      <ion-icon name="trash-bin" class="remove-icon" (click)="confirmRemoveVerb(i)"></ion-icon>
+//	    </ion-card-content>
+//	  </ion-card>
+//	</ion-content>
+
 
 }
