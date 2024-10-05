@@ -56,6 +56,7 @@ public class VerbJsonReaderService {
     }
 
 	public List<Map<String, Object>> getAllNouns() {
+		logger.info("Getting nouns list");
 		return nounsList;
 	}
 }

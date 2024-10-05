@@ -36,11 +36,12 @@ public class Services {
 	   
 	@jakarta.annotation.PostConstruct
 	public void getSuraDetails() throws JAXBException, IOException {
-		
+		logger.info("getSuraDetails starts...");
 		InputStream xmlFile = new ClassPathResource("quran-uthmani.xml").getInputStream();
 		JAXBContext jaxbContext = JAXBContext.newInstance(Quran.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 		quran = (Quran) unmarshaller.unmarshal(xmlFile);
+		logger.info("getSuraDetails ...");
 	}
 
 	public List<Map<String, Object>> getSuras() throws JAXBException, IOException {
@@ -59,7 +60,7 @@ public class Services {
 
 	public List<Map<String, Object>> getSura(int id) throws JAXBException, IOException {
 		long s = System.currentTimeMillis();
-		logger.info("Get sura starts ");
+		logger.info("Get sura starts "+id);
 		List<Map<String, Object>> list = new ArrayList<>();
 		quran.getSuras().stream().filter(x-> x.getIndex() == id).findFirst().ifPresent(sura -> {
 			sura.getAyas().stream().forEach(x -> {
