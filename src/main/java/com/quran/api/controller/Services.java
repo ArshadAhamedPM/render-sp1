@@ -2,18 +2,26 @@ package com.quran.api.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quran.api.model.Quran;
 import com.quran.api.model.Sura;
 import com.quran.api.repo.RequestDetailsRepository;
@@ -31,6 +39,8 @@ public class Services {
 	
 	
 	private Quran quran;
+	
+	private static final String CSV_URL = "https://docs.google.com/spreadsheets/d/1G9MpN17-eOBax1B0Fb0MVwkyPH3GEGd_j2vXNdOJ3ew/export?format=csv";
 	
 	final static Logger logger = LoggerFactory.getLogger(Services.class);
 	   
@@ -88,6 +98,59 @@ public class Services {
 		}
 		logger.info("Get ayat ends "+ (System.currentTimeMillis()-s));
 		return aya;
+	}
+
+	public List<Map<String, String>> getSheetData() {
+		
+		try {
+            // Get CSV data from the Google Sheets URL
+            RestTemplate restTemplate = new RestTemplate();
+            String csvData = restTemplate.getForObject(CSV_URL, String.class);
+
+            // Parse CSV data
+            StringReader csvBodyReader = new StringReader(csvData);
+            List<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(csvBodyReader).getRecords();
+
+            // Convert CSV records to JSON
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayNode jsonArray = mapper.createArrayNode();
+
+            for (CSVRecord record : records) {
+                ObjectNode jsonObject = mapper.createObjectNode();
+                record.toMap().forEach(jsonObject::put);
+                jsonArray.add(jsonObject);
+            }
+
+            String jsonStr= mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonArray);
+            List<Map<String, String>> list = mapper.readValue(
+            		jsonStr, new TypeReference<List<Map<String, String>>>() {}
+            );
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+           
+        }
+		
+		return null;
+	}
+
+	public String setSheetData(String name, String area, String contact) {
+
+		try {
+			logger.info("setSheetData {} {} {}",name,area,contact);
+			String setDataUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfMhu7G3HGe7LMh008AHzx5cok58GvG_mCPCSinU-PqByXwaA/formResponse?&submit=Submit?usp=pp_url&entry.107067118=#name&entry.1033209037=#area&entry.126908675=#contact"; 
+			if(area==null || area.trim()=="") {
+				area = "Najma";
+			}
+			setDataUrl = setDataUrl.replace("#name", name.strip()).replace("#area", area.strip()).replace("#contact", contact.strip());
+			
+			RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getForObject(setDataUrl, String.class);
+			return "success";
+		}catch (Exception e) {
+			logger.error("error in set data {}",e);
+		}
+		return null;
 	}
 	
 	

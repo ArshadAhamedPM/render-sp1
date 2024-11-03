@@ -51,4 +51,17 @@ public class Controller {
     public List<Map<String, Object>> getNounsExtract(){
     	return jsonReaderService.getAllNouns();
     }
+    
+    @GetMapping("/sheetData")
+    public List<Map<String, String>> getSheetData(){
+    	return services.getSheetData();
+    }
+    
+    @GetMapping("/setSheetData/{name}/{area}/{contact}")
+    public String setSheetData(@PathVariable("name") String name,@PathVariable("area") String area,@PathVariable("contact") String contact){
+    	return services.setSheetData(name,area,contact);
+    }
+    
+    
+    //https://docs.google.com/forms/d/e/1FAIpQLSeLDGac9w2UAj2J-txTRpwdWIMLe7ddunBRx69w-MV79CJ9qw/viewform?usp=pp_url&entry.1632252061=Arshad&entry.615037883=Mugalina&entry.261087118=66666666
 }
