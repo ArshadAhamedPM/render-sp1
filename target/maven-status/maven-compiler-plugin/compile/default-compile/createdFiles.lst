@@ -7,6 +7,7 @@ com\quran\api\controller\RepoService.class
 com\quran\api\model\VerbInfo.class
 com\quran\api\model\Aya.class
 com\quran\api\model\TopicScraper.class
+com\quran\api\controller\Services$1.class
 com\quran\api\config\WebConfig.class
 com\quran\api\controller\VerbJsonReaderService$1.class
 com\quran\api\model\Sura.class

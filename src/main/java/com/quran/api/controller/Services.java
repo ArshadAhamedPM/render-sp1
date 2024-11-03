@@ -101,7 +101,7 @@ public class Services {
 	}
 
 	public List<Map<String, String>> getSheetData() {
-		
+		logger.info("getSheetData ..");
 		try {
             // Get CSV data from the Google Sheets URL
             RestTemplate restTemplate = new RestTemplate();
